@@ -1,0 +1,87 @@
+package edu.pnu.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import edu.pnu.domain.MemberDTO;
+
+@RestController
+@RequestMapping("/api")
+public class MemberController {
+	private List<MemberDTO> list = new ArrayList<>();
+	
+	public MemberController() {
+		for (int i = 1; i <= 10; i++) {
+			list.add(MemberDTO.builder().id(i).name("name"+i).pass("pass"+i)
+										.regidate(new Date()).build());
+		}
+	}
+	
+	@GetMapping("/member")
+	public List<MemberDTO> getAllMember() {
+		return list;
+	}
+	
+	@GetMapping("/member/{id}")
+	public MemberDTO getMemberById(@PathVariable Integer id) {
+		for (MemberDTO m : list) {
+			if (m.getId() == id) {
+				return m;
+			}
+		}
+		return null;
+	}
+	
+	@PostMapping("/member")
+	public MemberDTO postMember(MemberDTO memberDTO) {
+		int lastId = 0;
+		for (MemberDTO m : list) {
+			if (lastId < m.getId()) {
+				lastId = m.getId();
+			}
+		}
+		memberDTO.setId(lastId+1);
+		memberDTO.setRegidate(new Date());
+		list.add(memberDTO);
+		return list.getLast();
+	}
+	
+	@PutMapping("/member/{id}")
+	public MemberDTO putMember(@PathVariable Integer id, MemberDTO memberDTO) {
+		MemberDTO temp = new MemberDTO();
+		for (MemberDTO m : list) {
+			if (m.getId() == id) {
+				temp = m;
+			}
+		}
+		list.set(list.indexOf(temp), memberDTO);
+		return list.get(list.indexOf(temp));
+	}
+	
+	@PatchMapping("/member/{id}")
+	public MemberDTO patchMember(@PathVariable Integer id, MemberDTO memberDTO) {
+		MemberDTO temp = new MemberDTO();
+		for (MemberDTO m : list) {
+			if (m.getId() == id) {
+				temp = m;
+			}
+		}
+		
+		return null;
+	}
+	
+	@DeleteMapping("/member/{id}")
+	public void deleteMember(@PathVariable Integer id) {
+		list.remove(list.get(id));
+	}
+}

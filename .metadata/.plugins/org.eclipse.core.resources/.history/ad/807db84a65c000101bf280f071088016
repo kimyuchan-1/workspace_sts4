@@ -1,0 +1,23 @@
+package edu.pnu.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import edu.pnu.domain.MemberDTO;
+
+@RestController
+@RequestMapping("/api")
+public class MemberController {
+	private List<MemberDTO> list = new ArrayList<>();
+	
+	public MemberController() {
+		for (int i = 1; i <= 10; i++) {
+			list.add(MemberDTO.builder().id(i).name("name"+i).pass("pass"+i)
+										.regidate(new Date()).build());
+		}
+	}
+}
